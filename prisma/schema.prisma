@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model tasks {
+  id        Int       @id(map: "tasks_pk") @default(autoincrement())
+  task      String    @unique
+  createdAt DateTime  @default(dbgenerated("'2022-12-08 19:37:38.406656'::timestamp without time zone")) @db.Timestamp(6)
+  UpdatedAt DateTime? @db.Timestamp(6)
+}
