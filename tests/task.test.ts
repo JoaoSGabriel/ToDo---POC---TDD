@@ -35,3 +35,13 @@ describe("GET: /tasks", () => {
     ]);
   });
 });
+
+describe("GET: /tasks", () => {
+  it("should respond with status 400 if invalid body", async () => {
+    const newTask = {};
+
+    const response = await server.post("/tasks").send(newTask);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+});
