@@ -8,3 +8,5 @@ app.get("/status", (req, res) => {
 });
 
 app.listen(4000, () => console.log("I'm working on port 4000!"));
+
+export default app;
