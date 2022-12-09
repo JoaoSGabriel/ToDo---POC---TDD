@@ -140,6 +140,27 @@ describe("DELETE /tasks/:taskId", () => {
   it("should respond with status 400 if invalid taskId", async () => {
     const response = await server.delete(`/tasks/teste`);
 
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  it("should respond with status 404 if doesnt found the task to update", async () => {
+    const response = await server.delete(`/tasks/2`);
+
+    expect(response.status).toBe(httpStatus.NOT_FOUND);
+  });
+
+  it("should respond with status 200 and exclude select task", async () => {
+    const task = await newTask();
+
+    const response = await server.delete(`/tasks/${task.id}`);
+
+    const deletedTask = await prisma.tasks.findFirst({
+      where: {
+        id: task.id,
+      },
+    });
+
     expect(response.status).toBe(httpStatus.OK);
+    expect(deletedTask).toBe(null);
   });
 });

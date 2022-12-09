@@ -34,6 +34,20 @@ async function updateTask(taskId: number, taskText: string) {
   });
 }
 
-const taskRepository = { showTasks, createTask, findTaskById, updateTask };
+async function deleteTaskById(taskiId: number) {
+  return await prisma.tasks.delete({
+    where: {
+      id: taskiId,
+    },
+  });
+}
+
+const taskRepository = {
+  showTasks,
+  createTask,
+  findTaskById,
+  updateTask,
+  deleteTaskById,
+};
 
 export default taskRepository;

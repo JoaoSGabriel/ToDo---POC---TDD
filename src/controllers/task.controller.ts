@@ -43,7 +43,25 @@ export async function putTasks(req: Request, res: Response) {
     await taskRepository.updateTask(taskId, task);
     res.sendStatus(httpStatus.OK);
   } catch (error) {
-    console.log(error.message);
+    res.sendStatus(500);
+  }
+}
+
+export async function deleteTask(req: Request, res: Response) {
+  const taskId = Number(req.params.taskId);
+
+  if (Number.isNaN(taskId)) {
+    res.sendStatus(httpStatus.BAD_REQUEST);
+    return;
+  }
+
+  try {
+    const selectTask = await taskRepository.findTaskById(taskId);
+    if (!selectTask) return res.sendStatus(httpStatus.NOT_FOUND);
+
+    await taskRepository.deleteTaskById(taskId);
+    res.sendStatus(httpStatus.OK);
+  } catch (error) {
     res.sendStatus(500);
   }
 }
