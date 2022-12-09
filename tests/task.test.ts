@@ -114,4 +114,32 @@ describe("PUT /tasks/:taskId", () => {
 
     expect(response.status).toBe(httpStatus.NOT_FOUND);
   });
+
+  it("should respond with status 200 and update select task data", async () => {
+    const task = await newTask();
+    const newTaskDescription = {
+      task: "Lavar a roupa",
+    };
+
+    const response = await server
+      .put(`/tasks/${task.id}`)
+      .send(newTaskDescription);
+
+    const updatedTask = await prisma.tasks.findFirst({
+      where: {
+        id: task.id,
+      },
+    });
+
+    expect(response.status).toBe(httpStatus.OK);
+    expect(updatedTask.task).toBe(newTaskDescription.task);
+  });
+});
+
+describe("DELETE /tasks/:taskId", () => {
+  it("should respond with status 400 if invalid taskId", async () => {
+    const response = await server.delete(`/tasks/teste`);
+
+    expect(response.status).toBe(httpStatus.OK);
+  });
 });

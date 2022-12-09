@@ -22,6 +22,18 @@ async function findTaskById(taskId: number) {
   });
 }
 
-const taskRepository = { showTasks, createTask, findTaskById };
+async function updateTask(taskId: number, taskText: string) {
+  return await prisma.tasks.update({
+    where: {
+      id: taskId,
+    },
+    data: {
+      task: taskText,
+      UpdatedAt: dayjs().format(),
+    },
+  });
+}
+
+const taskRepository = { showTasks, createTask, findTaskById, updateTask };
 
 export default taskRepository;

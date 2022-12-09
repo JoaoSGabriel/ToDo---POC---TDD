@@ -37,8 +37,11 @@ export async function putTasks(req: Request, res: Response) {
   }
 
   try {
-    const task = await taskRepository.findTaskById(taskId);
-    if (!task) return res.sendStatus(httpStatus.NOT_FOUND);
+    const selectTask = await taskRepository.findTaskById(taskId);
+    if (!selectTask) return res.sendStatus(httpStatus.NOT_FOUND);
+
+    await taskRepository.updateTask(taskId, task);
+    res.sendStatus(httpStatus.OK);
   } catch (error) {
     console.log(error.message);
     res.sendStatus(500);
