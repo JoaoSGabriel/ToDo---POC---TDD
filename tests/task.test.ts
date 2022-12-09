@@ -1,6 +1,7 @@
 import app from "../src/app";
 import httpStatus from "http-status";
 import supertest from "supertest";
+import prisma from "../src/config/database";
 import { cleanDB } from "./helper";
 import { newTask } from "./factories";
 
@@ -37,11 +38,80 @@ describe("GET: /tasks", () => {
 });
 
 describe("GET: /tasks", () => {
-  it("should respond with status 400 if invalid body", async () => {
+  it("should respond with status 400 if empty body", async () => {
     const newTask = {};
 
     const response = await server.post("/tasks").send(newTask);
 
     expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  it("should respond with status 400 if invalid body", async () => {
+    const newTask = {
+      task: 515,
+    };
+
+    const response = await server.post("/tasks").send(newTask);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  it("should respond with status 201 and net task data name", async () => {
+    const newTask = {
+      task: "Lavar a roupa",
+    };
+
+    const response = await server.post("/tasks").send(newTask);
+
+    const task = await prisma.tasks.findFirst({
+      where: {
+        task: newTask.task,
+      },
+    });
+
+    expect(response.status).toBe(httpStatus.CREATED);
+    expect(response.body).toEqual({ id: task.id });
+  });
+});
+
+describe("PUT /tasks/:taskId", () => {
+  it("should respond with status 400 if empty body", async () => {
+    const task = await newTask();
+    const updateTask = {};
+
+    const response = await server.put(`/tasks/${task.id}`).send(updateTask);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  it("should respond with status 400 if invalid body", async () => {
+    const task = await newTask();
+    const updateTask = {
+      task: 500,
+    };
+
+    const response = await server.put(`/tasks/${task.id}`).send(updateTask);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  it("should respond with status 400 if invalid taskId", async () => {
+    const updateTask = {
+      task: "Lavar a roupa",
+    };
+
+    const response = await server.put(`/tasks/teste`).send(updateTask);
+
+    expect(response.status).toBe(httpStatus.BAD_REQUEST);
+  });
+
+  it("should respond with status 404 if doesnt found the task to update", async () => {
+    const updateTask = {
+      task: "Lavar a roupa",
+    };
+
+    const response = await server.put(`/tasks/2`).send(updateTask);
+
+    expect(response.status).toBe(httpStatus.NOT_FOUND);
   });
 });

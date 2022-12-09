@@ -1,5 +1,7 @@
 import express from "express";
 import taskRouter from "./routers/task.router";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -10,6 +12,8 @@ app.get("/status", (req, res) => {
 
 app.use(taskRouter);
 
-app.listen(4000, () => console.log("I'm working on port 4000!"));
+app.listen(process.env.PORT, () => {
+  console.log(`Server is listening on port ${process.env.PORT}`);
+});
 
 export default app;
