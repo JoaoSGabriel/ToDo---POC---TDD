@@ -37,7 +37,7 @@ describe("GET: /tasks", () => {
   });
 });
 
-describe("GET: /tasks", () => {
+describe("POST: /tasks", () => {
   it("should respond with status 400 if empty body", async () => {
     const newTask = {};
 
